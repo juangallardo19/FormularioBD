@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Solicitud</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:     #F5F0E6;
+            --black:  #0D0D0D;
+            --accent: #FF2D55;
+            --border: 2.5px solid #0D0D0D;
+            --shadow: 5px 5px 0 #0D0D0D;
+        }
+
+        body {
+            background: var(--bg);
+            font-family: 'Space Mono', monospace;
+            color: var(--black);
+            min-height: 100vh;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        nav {
+            position: relative; z-index: 2;
+            border-bottom: var(--border);
+            padding: 18px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .back-link {
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--black);
+            opacity: 0.5;
+            transition: opacity .15s;
+        }
+        .back-link:hover { opacity: 1; }
+        .nav-badge {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: var(--accent);
+            border: var(--border);
+            padding: 4px 12px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .page-wrap {
+            position: relative; z-index: 1;
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 56px 48px 80px;
+        }
+
+        .form-header { margin-bottom: 52px; }
+        .form-header .eyebrow {
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0.4;
+            margin-bottom: 14px;
+        }
+        .form-header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3rem, 7vw, 5.5rem);
+            letter-spacing: 2px;
+            line-height: 0.95;
+        }
+        .form-header h1 em {
+            font-style: normal;
+            -webkit-text-stroke: 2px var(--black);
+            color: transparent;
+        }
+
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+            margin-top: 44px;
+        }
+        .section-label .num {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1rem;
+            background: var(--accent);
+            color: #fff;
+            padding: 2px 9px;
+            letter-spacing: 2px;
+        }
+        .section-label .label-text {
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: var(--black);
+            opacity: 0.12;
+        }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 40px;
+        }
+        .field-grid .full { grid-column: 1 / -1; }
+
+        @media (max-width: 600px) {
+            .field-grid { grid-template-columns: 1fr; }
+            .page-wrap { padding: 40px 24px 60px; }
+            nav { padding: 16px 24px; }
+        }
+
+        .field { margin-bottom: 34px; }
+        .field label {
+            display: block;
+            font-size: 0.65rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 10px;
+            opacity: 0.55;
+        }
+
+        .field input[type="text"],
+        .field input[type="email"],
+        .field input[type="date"],
+        .field input[type="file"] {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 2.5px solid var(--black);
+            padding: 8px 0 10px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--black);
+            outline: none;
+            transition: border-color 0.2s;
+            -webkit-appearance: none;
+        }
+        .field input:focus { border-bottom-color: var(--accent); }
+
+        .field select {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 2.5px solid var(--black);
+            padding: 8px 0 10px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--black);
+            outline: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230D0D0D' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+            padding-right: 28px;
+            transition: border-color 0.2s;
+        }
+        .field select:focus { border-bottom-color: var(--accent); }
+
+        .field textarea {
+            width: 100%;
+            background: transparent;
+            border: 2.5px solid var(--black);
+            padding: 12px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.88rem;
+            color: var(--black);
+            outline: none;
+            resize: vertical;
+            min-height: 110px;
+            transition: border-color 0.2s;
+        }
+        .field textarea:focus { border-color: var(--accent); }
+
+        .errorlist {
+            list-style: none; margin: 6px 0 0; padding: 0;
+        }
+        .errorlist li {
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 1px;
+        }
+
+        .submit-row {
+            margin-top: 52px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .btn-submit {
+            background: var(--accent);
+            color: #fff;
+            border: var(--border);
+            padding: 16px 36px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.82rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: transform .12s, box-shadow .12s;
+        }
+        .btn-submit:hover {
+            transform: translate(-2px,-2px);
+            box-shadow: 7px 7px 0 var(--black);
+        }
+        .btn-submit:active {
+            transform: translate(2px,2px);
+            box-shadow: 2px 2px 0 var(--black);
+        }
+        .submit-note {
+            font-size: 0.68rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0.35;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/" class="back-link">← Inicio</a>
+        <span class="nav-badge">02 — Solicitudes</span>
+    </nav>
+
+    <div class="page-wrap">
+
+        <div class="form-header">
+            <p class="eyebrow">Módulo 02 &mdash; Solicitudes</p>
+            <h1>Registro de<br><em>Solicitud</em></h1>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            <div class="section-label">
+                <span class="num">A</span>
+                <span class="label-text">Datos del Solicitante</span>
+            </div>
+
+            <div class="field-grid">
+                <div class="field full">
+                    <label>{{ form.nombre_solicitante.label }}</label>
+                    {{ form.nombre_solicitante }}
+                    {{ form.nombre_solicitante.errors }}
+                </div>
+                <div class="field">
+                    <label>{{ form.documento_identidad.label }}</label>
+                    {{ form.documento_identidad }}
+                    {{ form.documento_identidad.errors }}
+                </div>
+                <div class="field">
+                    <label>{{ form.telefono_contacto.label }}</label>
+                    {{ form.telefono_contacto }}
+                    {{ form.telefono_contacto.errors }}
+                </div>
+                <div class="field full">
+                    <label>{{ form.correo_electronico.label }}</label>
+                    {{ form.correo_electronico }}
+                    {{ form.correo_electronico.errors }}
+                </div>
+            </div>
+
+            <div class="section-label">
+                <span class="num">B</span>
+                <span class="label-text">Detalle de la Solicitud</span>
+            </div>
+
+            <div class="field-grid">
+                <div class="field">
+                    <label>{{ form.tipo_solicitud.label }}</label>
+                    {{ form.tipo_solicitud }}
+                    {{ form.tipo_solicitud.errors }}
+                </div>
+                <div class="field">
+                    <label>{{ form.fecha_solicitud.label }}</label>
+                    {{ form.fecha_solicitud }}
+                    {{ form.fecha_solicitud.errors }}
+                </div>
+                <div class="field full">
+                    <label>{{ form.asunto.label }}</label>
+                    {{ form.asunto }}
+                    {{ form.asunto.errors }}
+                </div>
+                <div class="field full">
+                    <label>{{ form.descripcion_detallada.label }}</label>
+                    {{ form.descripcion_detallada }}
+                    {{ form.descripcion_detallada.errors }}
+                </div>
+                <div class="field full">
+                    <label>{{ form.archivo_adjunto.label }} &mdash; <em style="opacity:.5;font-style:normal;font-size:.65rem;">opcional</em></label>
+                    {{ form.archivo_adjunto }}
+                    {{ form.archivo_adjunto.errors }}
+                </div>
+            </div>
+
+            <div class="submit-row">
+                <button type="submit" class="btn-submit">Enviar solicitud →</button>
+                <span class="submit-note">Almacenado en PostgreSQL</span>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.querySelectorAll('input[type=text], input[type=email], input[type=date], input[type=file]').forEach(el => {
+            el.removeAttribute('class');
+        });
+        document.querySelectorAll('select').forEach(el => el.removeAttribute('class'));
+        document.querySelectorAll('textarea').forEach(el => {
+            el.removeAttribute('class');
+            el.rows = 5;
+        });
+    </script>
+</body>
+</html>
